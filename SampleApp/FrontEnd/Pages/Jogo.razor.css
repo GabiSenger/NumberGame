@@ -1,0 +1,27 @@
+.btn-reiniciar{
+    background-color: forestgreen;
+    border-color: darkseagreen;
+    color: white
+}
+
+.input-area{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    margin-Top: 3rem;
+}
+
+.sucesso{
+    font-size: larger;
+    color:darkolivegreen;
+}
+
+.text{
+    color:rgb(116, 112, 112)
+}
+
+.message {
+    margin-top: 1rem;
+}

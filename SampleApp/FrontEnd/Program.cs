@@ -13,6 +13,14 @@ builder.Services.AddHttpClient<WeatherForecastClient>(c =>
     c.BaseAddress = new(url);
 });
 
+builder.Services.AddHttpClient<FrontEnd.Data.jogoNumero.JogoNumeroClient>(c =>
+{
+    var url = builder.Configuration["JOGO_URL"] 
+        ?? throw new InvalidOperationException("JOGO_URL is not set");
+
+    c.BaseAddress = new(url);
+});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

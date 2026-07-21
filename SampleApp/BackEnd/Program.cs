@@ -17,6 +17,7 @@ builder.Services.AddOpenApi(options =>
 });
 
 var app = builder.Build();
+// app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -27,10 +28,46 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+var jogosAtivos = new Dictionary<string, int>();
+var gerador = new Random();
+
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
+
+app.MapPost("/api/iniciar", () =>
+{
+    string jogoId = Guid.NewGuid().ToString();
+    int numeroSecreto = gerador.Next(1,101);
+
+    jogosAtivos[jogoId] = numeroSecreto;
+    return Results.Ok(new { jogoId = jogoId });
+});
+
+app.MapGet("/api/palpite", (string jogoId, int valor) =>
+{
+    if (!jogosAtivos.ContainsKey(jogoId))
+    {
+        return Results.BadRequest(new { mensagem = "Jogo não encontrado." });
+    }
+
+    int numeroSecreto = jogosAtivos[jogoId];
+
+    if(numeroSecreto == valor)
+    {
+        jogosAtivos.Remove(jogoId);
+        return Results.Ok(new { status = "acertou", mensagem = "Parabéns!!" });
+    }
+    else if(numeroSecreto < valor)
+    {
+        return Results.Ok(new { status = "menor", mensagem = "📉 O número é MENOR!" });
+    }
+    else
+    {
+        return Results.Ok(new { status = "maior", mensagem = "📈 O número é MAIOR!" });
+    }
+});
 
 app.MapGet("/weatherforecast", () =>
 {
